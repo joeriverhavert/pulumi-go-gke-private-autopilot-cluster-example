@@ -1,89 +1,99 @@
- # Pulumi GCP Go: Minimal Storage Bucket Template
+# Pulumi GCP Go: Example GKE Pilot Cluster  
 
- This template provisions a Google Cloud Storage bucket using Pulumi and Go. It demonstrates how to:
-   - Use the Pulumi GCP provider in a Go program
-   - Create a simple GCP resource (a Storage Bucket)
-   - Export resource outputs for use in your stacks
+This template provisions a **Google Kubernetes Engine (GKE) Autopilot Private Cluster** using Pulumi and Go. It also stores the generated **kubeconfig as a Secret** in Google Cloud Secret Manager.
 
- It’s a great starting point for learning Pulumi with Go on GCP or bootstrapping a project that needs object storage.
+It demonstrates how to:
 
- ## Providers
+- Use the Pulumi GCP provider in a Go program
+- Provision a secure GKE Autopilot cluster with private nodes and control plane
+- Generate and store the cluster kubeconfig as a managed secret
 
- - Google Cloud Platform via the Pulumi GCP SDK for Go (`github.com/pulumi/pulumi-gcp/sdk/v8/go/gcp`)
+It’s a great starting point for learning Pulumi with Go on GCP or bootstrapping a private, production-grade Kubernetes environment.
 
- ## Resources
+---
 
- - **Storage Bucket** (`gcp.storage.Bucket`)
-   - Logical name: `my-bucket`
-   - Location: `US`
+## 📦 Providers
 
- ## Outputs
+- **Google Cloud Platform** via the Pulumi GCP SDK for Go  
+  [`github.com/pulumi/pulumi-gcp/sdk/v8/go/gcp`](https://github.com/pulumi/pulumi-gcp)
 
- - **bucketName**: The URL of the newly created bucket (e.g., `https://storage.googleapis.com/my-bucket`)
+---
 
- ## When to Use This Template
+## ☁️ Resources
 
- - You want a minimal Pulumi program in Go targeting GCP
- - You need a simple object storage bucket for assets or data
- - You’re exploring Pulumi’s Go SDK for cloud provisioning
+- **GKE Autopilot Cluster** (`gcp.container.Cluster`)
+  - Autopilot mode enabled
+  - Private nodes and endpoint access
+- **Service Account** (`gcp.serviceaccount.Account`)
+  - Used for GKE node pool management
+- **Kubeconfig Secret** (`gcp.secretmanager.Secret` + `SecretVersion`)
+  - Contains `kubectl`-ready config stored securely
 
- ## Prerequisites
+---
 
- - Go 1.20 or later installed
- - A Google Cloud account with billing enabled
- - GCP credentials configured for Pulumi (for example, via `gcloud auth application-default login`)
+## 🔁 Outputs
 
- ## Usage
+- **Cluster Name**: The GKE cluster's name
+- **Cluster Endpoint**: HTTPS address for API access
+- **Kubeconfig Secret Name**: The Secret Manager name storing the kubeconfig
+- **Kubeconfig Secret Version Name**: The Secret Version name of storing the kubeconfig 
 
- 1. Scaffold a new project from this template:
-    ```bash
-    pulumi new gcp-go
-    ```
- 2. When prompted, fill in:
-    - **Project name**: your desired project identifier
-    - **Description**: a short description of your stack
-    - **gcp:project**: your target GCP project ID
- 3. Change into your project directory:
-    ```bash
-    cd <your-project-name>
-    ```
- 4. Preview and deploy your stack:
-    ```bash
-    pulumi preview
-    pulumi up
-    ```
+---
 
- ## Project Layout
+## 📌 When to Use This Template
 
- ```
- ├── Pulumi.yaml   Pulumi project definition and template settings
- ├── go.mod        Go module declaration and dependencies
- └── main.go       Pulumi program defining the Storage Bucket
- ```
+Use this if:
 
- ## Configuration
+- You want a **minimal, secure GKE Autopilot cluster** example
+- You need to **store kubeconfig safely** and retrieve it programmatically
+- You're exploring Pulumi’s Go SDK with GCP infrastructure
+- You're building CI/CD or IaC automation with secure access to clusters
 
- The following Pulumi configuration values are available:
+---
 
- | Name           | Description                             | Default    |
- | -------------- | --------------------------------------- | ---------- |
- | `gcp:project`  | The Google Cloud project to deploy into | _required_ |
+## 🧰 Prerequisites
 
- Set configuration with:
- ```bash
- pulumi config set gcp:project YOUR_PROJECT_ID
- ```
+- Go 1.20 or later installed
+- A Google Cloud project with billing enabled
+- GCP credentials configured for Pulumi:
 
- ## Next Steps
+```bash
+gcloud auth application-default login
+```
 
- - Add more GCP resources (e.g., Compute Engine, Pub/Sub, Cloud Functions)
- - Parameterize bucket settings such as versioning, access control, and lifecycle rules
- - Integrate IAM bindings for fine-grained permission management
- - Connect this bucket to other services or CI/CD pipelines
+## 🚀 Usage
+1. Scaffold your project
+```bash
+pulumi new gcp-go
+```
 
- ## Getting Help
+2. Set your project ID:
+```bash
+pulumi config set gcp:project conro-sbx
+```
+
+3. Set the Google Cloud Platform region(optional)
+```bash
+pulumi config set gcp:region europe-west1
+```
+
+4. Preview and deploy the resources
+```bash
+pulumi preview
+pulumi up
+```
+
+## 🗂️ Project Layout
+```bash
+├── Pulumi.yaml             # Project metadata
+├── Pulumi.<stack>.yaml     # Stack-specific configuration
+├── go.mod                  # Go module dependencies
+└── main.go                 # Pulumi program: provisions GKE and stores kubeconfig
+```
+
+ ## 📚 Getting Help
 
  - Pulumi Documentation: https://www.pulumi.com/docs/
  - GCP Provider Reference: https://www.pulumi.com/registry/packages/gcp/
  - Community Slack: https://slack.pulumi.com/
- - GitHub Issues: https://github.com/pulumi/pulumi/issues
+ - GitHub Issues: https://github.com/pulumi/pulumi/issues adjust my readme.
